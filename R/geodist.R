@@ -7,6 +7,8 @@
 #' whatever) containing longitude and latitude coordinates.
 #' @param y Optional second object which, if passed, results in distances
 #' calculated between each object in \code{x} and each in \code{y}.
+#' @param paired If \code{TRUE}, calculate paired distances between each entry
+#' in \code{x} and \code{y}, returning a single vector.
 #' @param sequential If \code{TRUE}, calculate (vector of) distances
 #' sequentially along \code{x} (when no \code{y} is passed), otherwise calculate
 #' matrix of pairwise distances between all points.
@@ -28,9 +30,10 @@
 #' code{sf::st_dist()} function.
 #'
 #' @export
-#' @useDynLib geodist R_haversine R_vincenty R_cheap_xy
-#' @useDynLib geodist R_haversine_xy R_vincenty_xy R_cheap_xy
-#' @useDynLib geodist R_haversine_seq R_vincenty_seq R_cheap_seq
+#' @useDynLib geodist R_haversine R_vincenty R_cheap R_geodesic
+#' @useDynLib geodist R_haversine_xy R_vincenty_xy R_cheap_xy R_geodesic_xy
+#' @useDynLib geodist R_haversine_paired R_vincenty_paired R_cheap_paired R_geodesic_paired
+#' @useDynLib geodist R_haversine_seq R_vincenty_seq R_cheap_seq R_geodesic_seq
 #'
 #' @examples
 #' n <- 50
@@ -42,14 +45,22 @@
 #' d2 <- geodist (x, sequential = TRUE) # Vector of length 49
 #' d2 <- geodist (x, sequential = TRUE, pad = TRUE) # Vector of length 50
 #' d0_2 <- geodist (x, measure = "geodesic") # nanometre-accurate version of d0
-geodist <- function (x, y, sequential = FALSE, pad = FALSE, measure = "cheap")
+geodist <- function (x, y, paired = FALSE,
+                     sequential = FALSE, pad = FALSE, measure = "cheap")
 {
     measures <- c ("haversine", "vincenty", "cheap", "geodesic")
     measure <- match.arg (tolower (measure), measures)
     x <- convert_to_matrix (x)
     if (!missing (y))
     {
-        if (sequential)
+        if (paired)
+        {
+            if (nrow (x) != nrow (y))
+                stop ("x and y must have the same number of ",
+                      "rows for paired distances")
+            y <- convert_to_matrix (y)
+            geodist_paired (x, y, measure)
+        } else if (sequential)
         {
             message ("Sequential distances calculated along values of 'x' only")
             geodist_seq (x, measure, pad)
@@ -67,6 +78,20 @@ geodist <- function (x, y, sequential = FALSE, pad = FALSE, measure = "cheap")
         else
             geodist_x (x, measure)
     }
+}
+
+geodist_paired <- function (x, y, measure)
+{
+    if (measure == "haversine")
+        res <- .Call("R_haversine_paired", as.vector (x), as.vector (y))
+    else if (measure == "vincenty")
+        res <- .Call("R_vincenty_paired", as.vector (x), as.vector (y))
+    else if (measure == "geodesic")
+        res <- .Call("R_geodesic_paired", as.vector (x), as.vector (y))
+    else
+        res <- .Call("R_cheap_paired", as.vector (x), as.vector (y))
+
+    return (res)
 }
 
 geodist_seq <- function (x, measure, pad)
