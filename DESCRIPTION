@@ -1,6 +1,6 @@
 Package: geodist
 Title: Fast, Dependency-Free Geodesic Distance Calculations
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(
     person("Mark", "Padgham", email="mark.padgham@email.com", role=c("aut", "cre")),
     person("Michael D.", "Sumner", role="aut"),
@@ -24,11 +24,11 @@ LazyData: true
 RoxygenNote: 6.1.1
 URL: https://github.com/hypertidy/geodist
 BugReports: https://github.com/hypertidy/geodist/issues
-Packaged: 2019-03-22 13:02:17 UTC; markus
+Packaged: 2019-04-17 09:45:28 UTC; markus
 Author: Mark Padgham [aut, cre],
   Michael D. Sumner [aut],
   Charles F.F Karney [cph] (Original author of included code for geodesic
     distances)
 Maintainer: Mark Padgham <mark.padgham@email.com>
 Repository: CRAN
-Date/Publication: 2019-03-22 14:00:16 UTC
+Date/Publication: 2019-04-17 12:30:03 UTC
