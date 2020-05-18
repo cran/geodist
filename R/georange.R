@@ -8,15 +8,12 @@
 #' respective distances in metres.
 #'
 #' @note \code{measure = "cheap"} denotes the mapbox cheap ruler
-#' \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodetic"}
-#' denotes the very accurate geodetic methods given in Kearney (2013)
+#' \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
+#' denotes the very accurate geodesic methods given in Karney (2013)
 #' "Algorithms for geodesics" J Geod 87:43-55, and as provided by the 
 #' code{sf::st_dist()} function.
 #'
 #' @export
-#' @useDynLib geodist R_haversine_range R_vincenty_range R_cheap_range
-#' @useDynLib geodist R_haversine_xy_range R_vincenty_xy R_cheap_xy_range
-#' @useDynLib geodist R_haversine_seq_range R_vincenty_seq R_cheap_seq_range
 #'
 #' @examples
 #' n <- 50
@@ -58,13 +55,13 @@ georange <- function (x, y, sequential = FALSE, measure = "cheap")
 georange_seq <- function (x, measure)
 {
     if (measure == "haversine")
-        res <- .Call (getNativeSymbolInfo ("R_haversine_seq_range"), as.vector (x))
+        res <- .Call ("R_haversine_seq_range", as.vector (x))
     else if (measure == "vincenty")
-        res <- .Call (getNativeSymbolInfo ("R_vincenty_seq_range"), as.vector (x))
+        res <- .Call ("R_vincenty_seq_range", as.vector (x))
     else if (measure == "geodesic")
-        res <- .Call (getNativeSymbolInfo ("R_geodesic_seq_range"), as.vector (x))
+        res <- .Call ("R_geodesic_seq_range", as.vector (x))
     else
-        res <- .Call (getNativeSymbolInfo ("R_cheap_seq_range"), as.vector (x))
+        res <- .Call ("R_cheap_seq_range", as.vector (x))
     
     names (res) <- c ("minimum", "maximum")
     return (res)
@@ -73,13 +70,13 @@ georange_seq <- function (x, measure)
 georange_x <- function (x, measure)
 {
     if (measure == "haversine")
-        res <- .Call (getNativeSymbolInfo ("R_haversine_range"), as.vector (x))
+        res <- .Call ("R_haversine_range", as.vector (x))
     else if (measure == "vincenty")
-        res <- .Call (getNativeSymbolInfo ("R_vincenty_range"), as.vector (x))
+        res <- .Call ("R_vincenty_range", as.vector (x))
     else if (measure == "geodesic")
-        res <- .Call (getNativeSymbolInfo ("R_geodesic_range"), as.vector (x))
+        res <- .Call ("R_geodesic_range", as.vector (x))
     else
-        res <- .Call (getNativeSymbolInfo ("R_cheap_range"), as.vector (x))
+        res <- .Call ("R_cheap_range", as.vector (x))
     
     names (res) <- c ("minimum", "maximum")
     return (res)
@@ -88,13 +85,13 @@ georange_x <- function (x, measure)
 georange_xy <- function (x, y, measure)
 {
     if (measure == "haversine")
-        res <- .Call (getNativeSymbolInfo ("R_haversine_xy_range"), as.vector (x), as.vector (y))
+        res <- .Call ("R_haversine_xy_range", as.vector (x), as.vector (y))
     else if (measure == "vincenty")
-        res <- .Call (getNativeSymbolInfo ("R_vincenty_xy_range"), as.vector (x), as.vector (y))
+        res <- .Call ("R_vincenty_xy_range", as.vector (x), as.vector (y))
     else if (measure == "geodesic")
-        res <- .Call (getNativeSymbolInfo ("R_geodesic_xy_range"), as.vector (x), as.vector (y))
+        res <- .Call ("R_geodesic_xy_range", as.vector (x), as.vector (y))
     else if (measure == "cheap")
-        res <- .Call (getNativeSymbolInfo ("R_cheap_xy_range"), as.vector (x), as.vector (y))
+        res <- .Call ("R_cheap_xy_range", as.vector (x), as.vector (y))
 
     names (res) <- c ("minimum", "maximum")
     return (res)

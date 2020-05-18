@@ -3,11 +3,16 @@
 \docType{package}
 \name{geodist}
 \alias{geodist}
-\alias{geodist-package}
 \title{geodist.}
 \usage{
-geodist(x, y, paired = FALSE, sequential = FALSE, pad = FALSE,
-  measure = "cheap")
+geodist(
+  x,
+  y,
+  paired = FALSE,
+  sequential = FALSE,
+  pad = FALSE,
+  measure = "cheap"
+)
 }
 \arguments{
 \item{x}{Rectangular object (matrix, \code{data.frame}, \pkg{tibble},
@@ -43,15 +48,16 @@ vector or matrix of geodesic distances.
 }
 \note{
 \code{measure = "cheap"} denotes the mapbox cheap ruler
-\url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodetic"}
-denotes the very accurate geodetic methods given in Kearney (2013)
+\url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
+denotes the very accurate geodesic methods given in Karney (2013)
 "Algorithms for geodesics" J Geod 87:43-55, and as provided by the 
 code{sf::st_dist()} function.
 }
 \examples{
 n <- 50
-x <- cbind (-10 + 20 * runif (n), -10 + 20 * runif (n))
-y <- cbind (-10 + 20 * runif (2 * n), -10 + 20 * runif (2 * n))
+# Default "cheap" distance measure is only accurate for short distances:
+x <- cbind (runif (n, -0.1, 0.1), runif (n, -0.1, 0.1))
+y <- cbind (runif (2 * n, -0.1, 0.1), runif (2 * n, -0.1, 0.1))
 colnames (x) <- colnames (y) <- c ("x", "y")
 d0 <- geodist (x) # A 50-by-50 matrix
 d1 <- geodist (x, y) # A 50-by-100 matrix

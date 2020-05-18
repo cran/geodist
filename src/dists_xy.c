@@ -24,8 +24,8 @@ SEXP R_haversine_xy (SEXP x_, SEXP y_)
 
     for (size_t i = 0; i < nx; i++)
     {
-        if (i % 100 == 0)
-            R_CheckUserInterrupt ();
+        if (i % 1000 == 0)
+            R_CheckUserInterrupt (); // # nocov
         double cosy1 = cos (rx [nx + i] * M_PI / 180.0); // y-value of x data
         for (size_t j = 0; j < ny; j++)
         {
@@ -58,8 +58,8 @@ SEXP R_vincenty_xy (SEXP x_, SEXP y_)
 
     for (size_t i = 0; i < nx; i++)
     {
-        if (i % 100 == 0)
-            R_CheckUserInterrupt ();
+        if (i % 1000 == 0)
+            R_CheckUserInterrupt (); // # nocov
         double siny1 = sin (rx [nx + i] * M_PI / 180.0); // y-value of x data
         double cosy1 = cos (rx [nx + i] * M_PI / 180.0); // y-value of x data
         for (size_t j = 0; j < ny; j++)
@@ -96,14 +96,14 @@ SEXP R_cheap_xy (SEXP x_, SEXP y_)
     {
         if (rx [nx + i] < ymin)
             ymin = rx [nx + i];
-        else if (rx [nx + i] > ymax)
+        if (rx [nx + i] > ymax)
             ymax = rx [nx + i];
     }
     for (size_t i = 0; i < ny; i++)
     {
         if (ry [ny + i] < ymin)
             ymin = ry [ny + i];
-        else if (ry [ny + i] > ymax)
+        if (ry [ny + i] > ymax)
             ymax = ry [ny + i];
     }
     // and set constant cosine multiplier
@@ -113,8 +113,8 @@ SEXP R_cheap_xy (SEXP x_, SEXP y_)
 
     for (size_t i = 0; i < nx; i++)
     {
-        if (i % 100 == 0)
-            R_CheckUserInterrupt ();
+        if (i % 1000 == 0)
+            R_CheckUserInterrupt (); // # nocov
         for (size_t j = 0; j < ny; j++)
         {
             rout [i * ny + j] = one_cheap (rx [i], rx [nx + i],
@@ -146,8 +146,8 @@ SEXP R_geodesic_xy (SEXP x_, SEXP y_)
 
     for (size_t i = 0; i < nx; i++)
     {
-        if (i % 100 == 0)
-            R_CheckUserInterrupt ();
+        if (i % 1000 == 0)
+            R_CheckUserInterrupt (); // # nocov
         for (size_t j = 0; j < ny; j++)
         {
             rout [i * ny + j] = one_geodesic (rx [i], rx [nx + i],

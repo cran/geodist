@@ -1,7 +1,7 @@
-## ----pkg-load, echo = FALSE, message = FALSE, eval = FALSE---------------
+## ----pkg-load, echo = FALSE, message = FALSE, eval = FALSE--------------------
 #  devtools::load_all (".", export_all = FALSE)
 
-## ----intro, eval = FALSE-------------------------------------------------
+## ----intro, eval = FALSE------------------------------------------------------
 #  n <- 50
 #  x <- cbind (-10 + 20 * runif (n), -10 + 20 * runif (n))
 #  y <- cbind (-10 + 20 * runif (2 * n), -10 + 20 * runif (2 * n))
@@ -11,7 +11,7 @@
 #  d2 <- geodist (x, sequential = TRUE) # Vector of length 49
 #  d2 <- geodist (x, sequential = TRUE, pad = TRUE) # Vector of length 50
 
-## ----tibble, eval = FALSE------------------------------------------------
+## ----tibble, eval = FALSE-----------------------------------------------------
 #  n <- 1e1
 #  x <- tibble::tibble (x = -180 + 360 * runif (n),
 #                       y = -90 + 180 * runif (n))
@@ -28,13 +28,13 @@
 #  dim (geodist (x))
 #  #> [1] 10 10
 
-## ----geodist_benchmark, eval = FALSE-------------------------------------
+## ----geodist_benchmark, eval = FALSE------------------------------------------
 #  geodist_benchmark (lat = 30, d = 1000)
 #  #>            haversine    vincenty       cheap
 #  #> absolute 0.836551561 0.836551562 0.594188257
 #  #> relative 0.002155514 0.002155514 0.001616718
 
-## ----plot, eval = FALSE, echo = FALSE------------------------------------
+## ----plot, eval = FALSE, echo = FALSE-----------------------------------------
 #  lat <- 30
 #  d <- 10 ^ (1:35 / 5) # 1m to 100 km
 #  y <- lapply (d, function (i) geodist_benchmark (lat = lat, d = i))
@@ -79,7 +79,7 @@
 #              legend = colnames (yvals [[i]]))
 #  }
 
-## ----benchmark-measures, eval = FALSE------------------------------------
+## ----benchmark-measures, eval = FALSE-----------------------------------------
 #  n <- 1e3
 #  dx <- dy <- 0.01
 #  x <- cbind (-100 + dx * runif (n), 20 + dy * runif (n))
@@ -96,7 +96,7 @@
 #  #> 3  d3 <- geodist(x, measure = "vincenty")           10   0.276    4.759
 #  #> 4  d4 <- geodist(x, measure = "geodesic")           10   3.106   53.552
 
-## ----x_to_sf, eval = FALSE-----------------------------------------------
+## ----x_to_sf, eval = FALSE----------------------------------------------------
 #  require (magrittr)
 #  x_to_sf <- function (x)
 #  {
@@ -106,7 +106,7 @@
 #      sf::st_sfc (crs = 4326)
 #  }
 
-## ----benchmark-sf, eval = FALSE------------------------------------------
+## ----benchmark-sf, eval = FALSE-----------------------------------------------
 #  n <- 1e2
 #  x <- cbind (-180 + 360 * runif (n), -90 + 180 * runif (n))
 #  colnames (x) <- c ("x", "y")
@@ -121,18 +121,18 @@
 #  #> 2  geo_dist(x)           10   0.066    1.000
 #  #> 1 sf_dist(xsf)           10   0.210    3.182
 
-## ----benchmark-sf-accuracy, eval = FALSE---------------------------------
+## ----benchmark-sf-accuracy, eval = FALSE--------------------------------------
 #  ds <- matrix (as.numeric (sf_dist (xsf)), nrow = length (xsf))
 #  dg <- geodist (x, measure = "geodesic")
 #  formatC (max (abs (ds - dg)), format = "e")
 #  #> [1] "7.4506e-09"
 
-## ---- echo = FALSE-------------------------------------------------------
+## ---- echo = FALSE------------------------------------------------------------
 n <- 1e4
 x <- cbind (-180 + 360 * runif (n), -90 + 180 * runif (n))
 colnames (x) <- c ("x", "y")
 
-## ----sequential, eval = FALSE--------------------------------------------
+## ----sequential, eval = FALSE-------------------------------------------------
 #  fgeodist <- function () geodist (x, measure = "vincenty", sequential = TRUE)
 #  fgeosph <- function () geosphere::distVincentySphere (x)
 #  rbenchmark::benchmark (replications = 10, order = "test",
