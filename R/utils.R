@@ -110,19 +110,21 @@ convert_to_matrix <- function (obj)
         obj <- matrix (obj, nrow = 1)
     if (is.numeric (obj))
     {
-        if (!(is.numeric (obj [, xy_cols [1]]) &
-              is.numeric (obj [, xy_cols [2]])))
-            cbind (as.numeric (obj [, xy_cols [1]]),
-                   as.numeric (obj [, xy_cols [2]]))
-        else
-            cbind (obj [, xy_cols [1]], obj [, xy_cols [2]])
+        cbind (obj [, xy_cols [1]], obj [, xy_cols [2]])
     } else
     {
-        if (!(is.numeric (obj [[xy_cols [1] ]]) &
-              is.numeric (obj [[xy_cols [2] ]])))
-            cbind (as.numeric (obj [[xy_cols [1] ]]),
-                   as.numeric (obj [[xy_cols [2] ]]))
-        else
+        if (!(is.numeric (obj [, xy_cols [1]]) &
+              is.numeric (obj [, xy_cols [2]]))) {
+            cbind (as.numeric (obj [, xy_cols [1]]),
+                   as.numeric (obj [, xy_cols [2]]))
+        } else
             cbind (obj [[xy_cols [1] ]], obj [[xy_cols [2] ]])
     }
+}
+
+check_max_d <- function (d, measure) {
+    if (max (d, na.rm = TRUE) > 100000)
+        message ("Maximum distance is > 100km. The 'cheap' measure is ",
+                 "inaccurate over such\nlarge distances, you'd likely ",
+                 "be better using a different 'measure'.")
 }

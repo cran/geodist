@@ -1,7 +1,7 @@
 #' geodist
 #'
 #' Convert one or two rectangular objects containing lon-lat coordinates into
-#' vector or matrix of geodesic distances.
+#' vector or matrix of geodesic distances in metres.
 #'
 #' @param x Rectangular object (matrix, \code{data.frame}, \pkg{tibble},
 #' whatever) containing longitude and latitude coordinates.
@@ -21,7 +21,8 @@
 #' symmetric matrix containing distances between all items in \code{x}; If only
 #' \code{x} passed and \code{sequential = TRUE}, a vector of sequential
 #' distances between rows of \code{x}; otherwise if \code{y} is passed, a matrix
-#' of \code{nrow(x)} rows and \code{nrow(y)} columns.
+#' of \code{nrow(x)} rows and \code{nrow(y)} columns. All return values are
+#' distances in metres.
 #'
 #' @note \code{measure = "cheap"} denotes the mapbox cheap ruler
 #' \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
@@ -56,39 +57,42 @@ geodist <- function (x, y, paired = FALSE,
                 stop ("x and y must have the same number of ",
                       "rows for paired distances")
             y <- convert_to_matrix (y)
-            geodist_paired (x, y, measure)
+            res <- geodist_paired (x, y, measure)
         } else if (sequential)
         {
             message ("Sequential distances calculated along values of 'x' only")
-            geodist_seq (x, measure, pad)
+            res <- geodist_seq (x, measure, pad)
         } else
         {
             y <- convert_to_matrix (y)
-            geodist_xy (x, y, measure)
+            res <- geodist_xy (x, y, measure)
             # t() because the src code loops over x then y, so y is the internal
             # loop
         }
     } else
     {
         if (sequential)
-            geodist_seq (x, measure, pad)
+            res <- geodist_seq (x, measure, pad)
         else
-            geodist_x (x, measure)
+            res <- geodist_x (x, measure)
     }
+
+    if (measure == "cheap")
+        check_max_d (res, measure)
+
+    return (res)
 }
 
 geodist_paired <- function (x, y, measure)
 {
     if (measure == "haversine")
-        res <- .Call ("R_haversine_paired", as.vector (x), as.vector (y))
+        .Call ("R_haversine_paired", as.vector (x), as.vector (y))
     else if (measure == "vincenty")
-        res <- .Call ("R_vincenty_paired", as.vector (x), as.vector (y))
+        .Call ("R_vincenty_paired", as.vector (x), as.vector (y))
     else if (measure == "geodesic")
-        res <- .Call ("R_geodesic_paired", as.vector (x), as.vector (y))
+        .Call ("R_geodesic_paired", as.vector (x), as.vector (y))
     else
-        res <- .Call ("R_cheap_paired", as.vector (x), as.vector (y))
-
-    return (res)
+        .Call ("R_cheap_paired", as.vector (x), as.vector (y))
 }
 
 geodist_seq <- function (x, measure, pad)

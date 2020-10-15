@@ -58,8 +58,9 @@ colnames (x) <- c ("lon", "lat", "a", "b")
 dim (geodist (x))
 #> [1] 10 10
 ```
-Distances currently implemented are Haversine, Vincenty (spherical), the very
-fast [mapbox cheap
+All outputs are distances in metres, calculated with a variety of spherical and
+elliptical distance measures. Distance measures currently implemented are
+Haversine, Vincenty (spherical), the very fast [mapbox cheap
 ruler](https://github.com/mapbox/cheap-ruler-cpp/blob/master/include/mapbox/cheap_ruler.hpp)
 (see their [blog
 post](https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016)),
@@ -101,8 +102,8 @@ around 0.16%.
 lat <- 30
 d <- 10 ^ (1:35 / 5) # 1m to 100 km
 y <- lapply (d, function (i) geodist_benchmark (lat = lat, d = i))
-yabs <- do.call (rbind, lapply (y, function (i) i [1, ])) [, c (1, 2, 4)]
-yrel <- 100 * do.call (rbind, lapply (y, function (i) i [2, ])) [, c (1, 2, 4)]
+yabs <- do.call (rbind, lapply (y, function (i) i [1, ]))
+yrel <- 100 * do.call (rbind, lapply (y, function (i) i [2, ]))
 
 yvals <- list (yabs, yrel)
 cols <- c ("skyblue", "lawngreen", "tomato")
