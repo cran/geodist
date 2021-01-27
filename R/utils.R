@@ -62,27 +62,34 @@ find_xy_cols <- function (obj)
 
     if (!is.null (nms))
     {
-        ix <- grep ("x|lon", nms, ignore.case = TRUE)
-        if (length (ix) > 1)
-        {
-            ix <- grep ("^x|lon", nms, ignore.case = TRUE)
-            if (length (ix) != 1)
-            {
-                ix <- grep ("x$|lon", nms, ignore.case = TRUE)
-                if (length (ix) != 1)
-                    ix <- grep ("^x$|lon", nms, ignore.case = TRUE)
-            }
+        ix <- grep ("^x|x$|^lon|lon$", nms, ignore.case = TRUE)
+        if (length (ix) > 1) {
+            # exclude any with :alpha: before or after x/lon:
+            ptn <- paste0 ("^x[[:alpha:]]|",
+                           "[[:alpha:]]x$|",
+                           "^lon[[:alpha:]]|",
+                           "[[:alpha:]]lon$")
+            ix <- ix [which (!seq_along (ix) %in% grep (ptn, nms [ix]))]
         }
-        iy <- grep ("y|lat", nms, ignore.case = TRUE)
-        if (length (iy) > 1)
-        {
-            iy <- grep ("^y|lat", nms, ignore.case = TRUE)
-            if (length (iy != 1))
-            {
-                iy <- grep ("y$|lat", nms, ignore.case = TRUE)
-                if (length (iy) != 1)
-                    iy <- grep ("^y$|lat", nms, ignore.case = TRUE)
-            }
+        if (length (ix) != 1) {
+            # try initial or terminal punct characters before/after x/lon:
+            ptn <- paste0 ("^[[:punct:]]+x|x[[:punct:]]+$|",
+                           "^[[:punct:]]+lon|lon[[:punct:]]+$")
+            ix <- grep (ptn, nms, ignore.case = TRUE)
+        }
+        iy <- grep ("^y|y$|^lat|lat$", nms, ignore.case = TRUE)
+        if (length (iy) > 1) {
+            ptn <- paste0 ("^y[[:alpha:]]|",
+                           "[[:alpha:]]y$|",
+                           "^lat[[:alpha:]]|",
+                           "[[:alpha:]]lat$")
+            iy <- iy [which (!seq_along (iy) %in% grep (ptn, nms [iy]))]
+        }
+        if (length (iy) != 1) {
+            # try initial or terminal punct characters before/after x/lon:
+            ptn <- paste0 ("^[[:punct:]]+y|y[[:punct:]]+$|",
+                           "^[[:punct:]]+lat|lat[[:punct:]]+$")
+            iy <- grep (ptn, nms, ignore.case = TRUE)
         }
         if (length (ix) != 1 | length (iy) != 1)
             stop ("Unable to determine longitude and latitude columns; ",
@@ -113,10 +120,10 @@ convert_to_matrix <- function (obj)
         cbind (obj [, xy_cols [1]], obj [, xy_cols [2]])
     } else
     {
-        if (!(is.numeric (obj [, xy_cols [1]]) &
-              is.numeric (obj [, xy_cols [2]]))) {
-            cbind (as.numeric (obj [, xy_cols [1]]),
-                   as.numeric (obj [, xy_cols [2]]))
+        if (!(is.numeric (obj [, xy_cols [1], drop = TRUE]) &
+              is.numeric (obj [, xy_cols [2], drop = TRUE]))) {
+            cbind (as.numeric (obj [, xy_cols [1], drop = TRUE]),
+                   as.numeric (obj [, xy_cols [2], drop = TRUE]))
         } else
             cbind (obj [[xy_cols [1] ]], obj [[xy_cols [2] ]])
     }
