@@ -1,4 +1,12 @@
-# v0.0.6.00x
+# v0.0.8
+
+### Minor changes:
+
+- Update geodesic source code
+- Add codeberg.org/hypertidy/geodist remote
+- Fix all clang warnings, including new header files with prototypes for all fns
+
+# v0.0.7
 
 ### Minor changes:
 

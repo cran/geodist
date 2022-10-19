@@ -4,7 +4,7 @@
 \alias{geodist_benchmark}
 \title{geodist_benchmark}
 \usage{
-geodist_benchmark(lat = 0, d = 1, n = 100)
+geodist_benchmark(lat = 0, d = 1, n = 100L)
 }
 \arguments{
 \item{lat}{Central latitude where errors should be measured}
@@ -13,9 +13,14 @@ geodist_benchmark(lat = 0, d = 1, n = 100)
 
 \item{n}{Number of random values used to generate estimates}
 }
+\value{
+A 'data.frame' with three columns respectively comparing the accuracy
+of the [Haversine, Vincenty, cheap] metrics against geodesic measures in both
+absolute and relative terms (as two rows of the table).
+}
 \description{
 Benchmark errors for different geodist measures
 }
 \examples{
-geodist_benchmark (0, 1, 100)
+geodist_benchmark (0.0, 1.0, 100L)
 }

@@ -1,4 +1,3 @@
-context("georange")
 
 test_all <- (identical (Sys.getenv ("MPADGE_LOCAL"), "true") |
              identical (Sys.getenv ("TRAVIS"), "true"))
@@ -34,8 +33,9 @@ test_that ("different measures", {
               d3 <- georange (x, sequential = TRUE, measure = "vincenty")
               d4 <- georange (x, sequential = TRUE, measure = "geodesic")
               expect_true (!identical (d1, d2))
-              if (test_all) # haversine and vincenty are sometimes identical
-              {
+
+              if (test_all) { # haversine and vincenty are sometimes identical
+
                   expect_true (!identical (d1, d3))
                   expect_true (!identical (d1, d4))
                   #expect_true (!identical (d2, d3))
@@ -49,8 +49,8 @@ test_that ("different measures", {
                             "'arg' should be one of")
 })
 
-havdist <- function (x, y)
-{
+havdist <- function (x, y) {
+
     if (missing (y))
         y <- x
     x1mat <- array (x [, 1], dim = c (nrow (x), nrow (y)))
@@ -64,7 +64,7 @@ havdist <- function (x, y)
     earth <- 6378137 # radius of Earth in m
     d <- syd * syd +
         cos (x2mat * pi / 180) * cos (y2mat * pi / 180) * sxd * sxd
-    2 * earth * asin (sqrt (d));
+    2 * earth * asin (sqrt (d))
 }
 
 test_that("range structure for x only", {

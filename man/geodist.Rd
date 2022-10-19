@@ -11,7 +11,8 @@ geodist(
   paired = FALSE,
   sequential = FALSE,
   pad = FALSE,
-  measure = "cheap"
+  measure = "cheap",
+  quiet = FALSE
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ return \code{n - 1} values.}
 
 \item{measure}{One of "haversine" "vincenty", "geodesic", or "cheap"
 specifying desired method of geodesic distance calculation; see Notes.}
+
+\item{quiet}{If \code{FALSE}, check whether max of calculated distances
+is greater than accuracy threshold and warn.}
 }
 \value{
 If only \code{x} passed and \code{sequential = FALSE}, a square
@@ -51,7 +55,7 @@ vector or matrix of geodesic distances in metres.
 \code{measure = "cheap"} denotes the mapbox cheap ruler
 \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
 denotes the very accurate geodesic methods given in Karney (2013)
-"Algorithms for geodesics" J Geod 87:43-55, and as provided by the 
+"Algorithms for geodesics" J Geod 87:43-55, and as provided by the
 code{sf::st_dist()} function.
 }
 \examples{
@@ -65,4 +69,8 @@ d1 <- geodist (x, y) # A 50-by-100 matrix
 d2 <- geodist (x, sequential = TRUE) # Vector of length 49
 d2 <- geodist (x, sequential = TRUE, pad = TRUE) # Vector of length 50
 d0_2 <- geodist (x, measure = "geodesic") # nanometre-accurate version of d0
+
+# Input data can also be 'data.frame' objects:
+xy <- data.frame (x = runif (n, -0.1, 0.1), y = runif (n, -0.1, 0.1))
+d <- geodist (xy)
 }

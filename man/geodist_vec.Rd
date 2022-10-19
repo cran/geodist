@@ -12,7 +12,8 @@ geodist_vec(
   paired = FALSE,
   sequential = FALSE,
   pad = FALSE,
-  measure = "cheap"
+  measure = "cheap",
+  quiet = FALSE
 )
 }
 \arguments{
@@ -32,11 +33,14 @@ sequentially along \code{(x1, y1)} (when no \code{(x2, y2)} are passed),
 otherwise calculate matrix of pairwise distances between all points.}
 
 \item{pad}{If \code{sequential = TRUE} values are padded with initial
-\code{NA} to return \code{n} values for inputs of lenght \code{n}, otherwise
+\code{NA} to return \code{n} values for inputs of length \code{n}, otherwise
 return \code{n - 1} values.}
 
 \item{measure}{One of "haversine" "vincenty", "geodesic", or "cheap"
 specifying desired method of geodesic distance calculation; see Notes.}
+
+\item{quiet}{If \code{FALSE}, check whether max of calculated distances
+is greater than accuracy threshhold and warn.}
 }
 \value{
 If only \code{(x1, y1)} are passed and \code{sequential = FALSE}, a
@@ -57,7 +61,7 @@ faster results than the main function.
 \code{measure = "cheap"} denotes the mapbox cheap ruler
 \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
 denotes the very accurate geodesic methods given in Karney (2013)
-"Algorithms for geodesics" J Geod 87:43-55, and as provided by the 
+"Algorithms for geodesics" J Geod 87:43-55, and as provided by the
 code{sf::st_dist()} function.
 }
 \examples{
@@ -67,7 +71,7 @@ x1 <- -1 + 2 * runif (n, -0.1, 0.1)
 y1 <- -1 + 2 * runif (n, -0.1, 0.1)
 d0 <- geodist_vec (x1, y1) # A 50-by-50 matrix
 d2 <- geodist_vec (x1, y1, sequential = TRUE) # Vector of length 49
-d2 <- geodist_vec (x1, y1, sequential = TRUE, pad = TRUE) # Vector of length 50
+d2 <- geodist_vec (x1, y1, sequential = TRUE, pad = TRUE) # length 50
 x2 <- -10 + 20 * runif (2 * n, -0.1, 0.1)
 y2 <- -10 + 20 * runif (2 * n, -0.1, 0.1)
 d1 <- geodist_vec (x1, y1, x2, y2) # A 50-by-100 matrix

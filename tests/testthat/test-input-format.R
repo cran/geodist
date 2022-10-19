@@ -1,4 +1,3 @@
-context("geodist input formats")
 # tibble not tested to avoid pacakge suggests, but just needs these lines
 #x <- tibble::tibble (x = -180 + 360 * runif (n),
 #                     y = -90 + 180 * runif (n))
@@ -39,7 +38,8 @@ test_that("geodist with matrix", {
               diag (d1) <- Inf
               expect_true (all (d1 >= 0))
 
-              expect_message (d2 <- geodist (x, y), "object has no named columns")
+              expect_message (d2 <- geodist (x, y),
+                              "object has no named columns")
               expect_equal (dim (d2), c (n, 2 * n))
               diag (d2) <- Inf
               expect_true (all (d2 > 0))
@@ -58,7 +58,7 @@ test_that ("other columns", {
                expect_identical (d, d1)
 })
 
-test_that ("column names, ", {
+test_that ("column names", {
                n <- 50
                x <- cbind (-10 + 20 * runif (n), -10 + 20 * runif (n))
                y <- cbind (-10 + 20 * runif (n), -10 + 20 * runif (n))

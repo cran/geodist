@@ -17,6 +17,8 @@
 #' return \code{n - 1} values.
 #' @param measure One of "haversine" "vincenty", "geodesic", or "cheap"
 #' specifying desired method of geodesic distance calculation; see Notes.
+#' @param quiet If \code{FALSE}, check whether max of calculated distances
+#' is greater than accuracy threshold and warn.
 #' @return If only \code{x} passed and \code{sequential = FALSE}, a square
 #' symmetric matrix containing distances between all items in \code{x}; If only
 #' \code{x} passed and \code{sequential = TRUE}, a vector of sequential
@@ -27,7 +29,7 @@
 #' @note \code{measure = "cheap"} denotes the mapbox cheap ruler
 #' \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
 #' denotes the very accurate geodesic methods given in Karney (2013)
-#' "Algorithms for geodesics" J Geod 87:43-55, and as provided by the 
+#' "Algorithms for geodesics" J Geod 87:43-55, and as provided by the
 #' code{sf::st_dist()} function.
 #'
 #' @export
@@ -43,48 +45,55 @@
 #' d2 <- geodist (x, sequential = TRUE) # Vector of length 49
 #' d2 <- geodist (x, sequential = TRUE, pad = TRUE) # Vector of length 50
 #' d0_2 <- geodist (x, measure = "geodesic") # nanometre-accurate version of d0
+#'
+#' # Input data can also be 'data.frame' objects:
+#' xy <- data.frame (x = runif (n, -0.1, 0.1), y = runif (n, -0.1, 0.1))
+#' d <- geodist (xy)
 geodist <- function (x, y, paired = FALSE,
-                     sequential = FALSE, pad = FALSE, measure = "cheap")
-{
+                     sequential = FALSE, pad = FALSE,
+                     measure = "cheap", quiet = FALSE) {
+
     measures <- c ("haversine", "vincenty", "cheap", "geodesic")
     measure <- match.arg (tolower (measure), measures)
+
     x <- convert_to_matrix (x)
-    if (!missing (y))
-    {
-        if (paired)
-        {
+
+    if (!missing (y)) {
+
+        if (paired) {
+
             if (nrow (x) != nrow (y))
                 stop ("x and y must have the same number of ",
                       "rows for paired distances")
             y <- convert_to_matrix (y)
             res <- geodist_paired (x, y, measure)
-        } else if (sequential)
-        {
+        } else if (sequential) {
+
             message ("Sequential distances calculated along values of 'x' only")
             res <- geodist_seq (x, measure, pad)
-        } else
-        {
+        } else {
+
             y <- convert_to_matrix (y)
             res <- geodist_xy (x, y, measure)
             # t() because the src code loops over x then y, so y is the internal
             # loop
         }
-    } else
-    {
+    } else {
+
         if (sequential)
             res <- geodist_seq (x, measure, pad)
         else
             res <- geodist_x (x, measure)
     }
 
-    if (measure == "cheap")
+    if (measure == "cheap" & ! quiet)
         check_max_d (res, measure)
 
     return (res)
 }
 
-geodist_paired <- function (x, y, measure)
-{
+geodist_paired <- function (x, y, measure) {
+
     if (measure == "haversine")
         .Call ("R_haversine_paired", as.vector (x), as.vector (y))
     else if (measure == "vincenty")
@@ -95,8 +104,8 @@ geodist_paired <- function (x, y, measure)
         .Call ("R_cheap_paired", as.vector (x), as.vector (y))
 }
 
-geodist_seq <- function (x, measure, pad)
-{
+geodist_seq <- function (x, measure, pad) {
+
     if (measure == "haversine")
         res <- matrix (.Call ("R_haversine_seq", as.vector (x)),
                        nrow = nrow (x))
@@ -106,16 +115,16 @@ geodist_seq <- function (x, measure, pad)
         res <- matrix (.Call ("R_geodesic_seq", as.vector (x)), nrow = nrow (x))
     else
         res <- matrix (.Call ("R_cheap_seq", as.vector (x)), nrow = nrow (x))
-    
-    indx <- 1:length (res)
-    if (!pad)
-        indx <- 2:length (res)
 
-    return (res [indx]) # implicitly converts to vector
+    index <- seq_along (res)
+    if (!pad)
+        index <- index [-1]
+
+    return (res [index]) # implicitly converts to vector
 }
 
-geodist_x <- function (x, measure)
-{
+geodist_x <- function (x, measure) {
+
     if (measure == "haversine")
         matrix (.Call ("R_haversine", as.vector (x)), nrow = nrow (x))
     else if (measure == "vincenty")
@@ -126,8 +135,8 @@ geodist_x <- function (x, measure)
         matrix (.Call ("R_cheap", as.vector (x)), nrow = nrow (x))
 }
 
-geodist_xy <- function (x, y, measure)
-{
+geodist_xy <- function (x, y, measure) {
+
     if (measure == "haversine")
         res <- .Call ("R_haversine_xy", as.vector (x), as.vector (y))
     else if (measure == "vincenty")
@@ -136,5 +145,6 @@ geodist_xy <- function (x, y, measure)
         res <- .Call ("R_geodesic_xy", as.vector (x), as.vector (y))
     else if (measure == "cheap")
         res <- .Call ("R_cheap_xy", as.vector (x), as.vector (y))
+
     t (matrix (res, nrow = nrow (y)))
 }
