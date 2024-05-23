@@ -11,7 +11,7 @@
 #' \url{https://github.com/mapbox/cheap-ruler-cpp}; \code{measure = "geodesic"}
 #' denotes the very accurate geodesic methods given in Karney (2013)
 #' "Algorithms for geodesics" J Geod 87:43-55, and as provided by the
-#' code{sf::st_dist()} function.
+#' `st_dist()` function from the \pkg{sf} package.
 #'
 #' @export
 #'
@@ -45,23 +45,25 @@ georange <- function (x, y, sequential = FALSE, measure = "cheap") {
         }
     } else {
 
-        if (sequential)
+        if (sequential) {
             georange_seq (x, measure)
-        else
+        } else {
             georange_x (x, measure)
+        }
     }
 }
 
 georange_seq <- function (x, measure) {
 
-    if (measure == "haversine")
+    if (measure == "haversine") {
         res <- .Call ("R_haversine_seq_range", as.vector (x))
-    else if (measure == "vincenty")
+    } else if (measure == "vincenty") {
         res <- .Call ("R_vincenty_seq_range", as.vector (x))
-    else if (measure == "geodesic")
+    } else if (measure == "geodesic") {
         res <- .Call ("R_geodesic_seq_range", as.vector (x))
-    else
+    } else {
         res <- .Call ("R_cheap_seq_range", as.vector (x))
+    }
 
     names (res) <- c ("minimum", "maximum")
 
@@ -70,14 +72,15 @@ georange_seq <- function (x, measure) {
 
 georange_x <- function (x, measure) {
 
-    if (measure == "haversine")
+    if (measure == "haversine") {
         res <- .Call ("R_haversine_range", as.vector (x))
-    else if (measure == "vincenty")
+    } else if (measure == "vincenty") {
         res <- .Call ("R_vincenty_range", as.vector (x))
-    else if (measure == "geodesic")
+    } else if (measure == "geodesic") {
         res <- .Call ("R_geodesic_range", as.vector (x))
-    else
+    } else {
         res <- .Call ("R_cheap_range", as.vector (x))
+    }
 
     names (res) <- c ("minimum", "maximum")
 
@@ -86,14 +89,15 @@ georange_x <- function (x, measure) {
 
 georange_xy <- function (x, y, measure) {
 
-    if (measure == "haversine")
+    if (measure == "haversine") {
         res <- .Call ("R_haversine_xy_range", as.vector (x), as.vector (y))
-    else if (measure == "vincenty")
+    } else if (measure == "vincenty") {
         res <- .Call ("R_vincenty_xy_range", as.vector (x), as.vector (y))
-    else if (measure == "geodesic")
+    } else if (measure == "geodesic") {
         res <- .Call ("R_geodesic_xy_range", as.vector (x), as.vector (y))
-    else if (measure == "cheap")
+    } else if (measure == "cheap") {
         res <- .Call ("R_cheap_xy_range", as.vector (x), as.vector (y))
+    }
 
     names (res) <- c ("minimum", "maximum")
 
