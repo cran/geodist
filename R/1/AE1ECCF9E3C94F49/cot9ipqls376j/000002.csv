@@ -1,0 +1,8 @@
+"0","#x <- autotest_package (""/<local>/<path>/<to>/riskmetric"")
+x <- autotest_package (""/data/mega/code/forks/riskmetric/"")
+"
+"2","Loading riskmetric
+"
+"2","numerical expression has 2 elements: only the first used"
+"2","[0;48;5;160;38;5;231mError in gregexpr(""\\("", xsub) : object 'xsub' not found[0m
+"
